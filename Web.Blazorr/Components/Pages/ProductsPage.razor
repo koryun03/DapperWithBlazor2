@@ -1,0 +1,53 @@
+﻿@using Application.ServiceInterfaces
+@using Domain.Dtos
+@page "/product"
+<PageTitle>Producttttt</PageTitle>
+
+
+@inject IProductService  _productService
+
+<a class="btn btn-primary mb-2" href="/createProduct">Create New Product</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>ProductName</th>
+            <th>Amount</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in dtos)
+        {
+            <tr>
+                <td>@product.Id</td>
+                <td>@product.ProductName</td>
+                <td>@product.Amount</td>
+                <td>@product.Price</td>
+                <td>
+                    <a class="btn btn-warning" href="/updateProduct/@product.Id">Edit</a>
+                    <button class="btn btn-danger" @onclick="() => Delete(product.Id)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<ProductDto> dtos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        dtos = await _productService.GetAllAsync();
+    }
+
+    private async Task Delete(int id)
+    {
+        if (id != null)
+        {
+            await _productService.DeleteAsync(id);
+            dtos = await _productService.GetAllAsync();
+        }
+    }
+}

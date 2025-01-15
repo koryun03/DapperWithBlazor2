@@ -1,0 +1,36 @@
+﻿@page "/createProduct"
+@using Application.ServiceInterfaces
+@using Domain.Dtos
+<h3>Create Product</h3>
+
+@inject IProductService _productService
+@inject NavigationManager Navigation
+
+<EditForm Model="@dto" OnValidSubmit="Insert">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Product Name:</label>
+        <InputText @bind-Value="@dto.ProductName" class="form-control" />
+    </div>
+    <div>
+        <label>Amount:</label>
+        <InputNumber @bind-Value="@dto.Amount" class="form-control" />
+    </div>
+    <div>
+        <label>Price:</label>
+        <InputNumber @bind-Value="@dto.Price" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-danger">Save</button>
+</EditForm>
+
+@code {
+    private ProductInsertDto dto = new();
+
+    private async Task Insert()
+    {
+        await _productService.InsertAsync(dto);
+        Navigation.NavigateTo("/product");
+    }
+}

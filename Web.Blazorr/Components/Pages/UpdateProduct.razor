@@ -1,0 +1,43 @@
+﻿@page "/updateProduct/{id:int}"
+@using Application.ServiceInterfaces
+@using Domain.Dtos
+<h3>Update Product</h3>
+
+@inject IProductService _productService
+@inject NavigationManager Navigation
+
+<EditForm Model="@dto">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Product Name:</label>
+        <InputText @bind-Value="@dto.ProductName" class="form-control" />
+    </div>
+    <div>
+        <label>Amount:</label>
+        <InputNumber @bind-Value="@dto.Amount" class="form-control" />
+    </div>
+    <div>
+        <label>Price:</label>
+        <InputNumber @bind-Value="@dto.Price" class="form-control" />
+    </div>
+    <button type="button" class="btn btn-danger" @onclick="() =>Update()">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int  Id   { get; set; }
+
+    private ProductDto dto = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        dto = await  _productService.GetByIdAsync(Id);
+    }
+    private async Task Update()
+    {
+        await _productService.UpdateAsync(dto);
+        Navigation.NavigateTo("/product");
+    }
+}
